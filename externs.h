@@ -94,7 +94,7 @@ extern Boolean StringToBoolean(char *);
 extern Boolean GetColorResource(char *, unsigned long *);
 extern XFontStruct *GetFontResource(char *);
 extern unsigned long GetColorOrDefault(Display *, char *,
-				       int, char *, Boolean);
+                                       int, char *, Boolean);
 
 /* stuff from play.c */
 extern short Play(void);

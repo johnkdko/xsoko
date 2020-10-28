@@ -18,7 +18,7 @@ h_line help_pages[] = {
   { 13, 15, 0, "Run/Push      H    L    K   J"},
   { 13, 15, 0, "Run Only     ^H   ^L   ^K  ^J"},
   { 0, 30, 0, "Other Commands:"},
-  { 12, 15, 0, "^r: redraw screen             ?: this help message"}, 
+  { 12, 15, 0, "^r: redraw screen             ?: this help message"},
   { 12, 15, 0, " u: undo last action          U: restart this level"},
   { 12, 15, 0, " s: save game and quit        q: quit level"},
   { 12, 15, 0, " c: snapshot posn            ^U: restore snapshot"},

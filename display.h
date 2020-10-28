@@ -3,10 +3,10 @@
 
 
 extern short InitX(void);
-/* 
+/*
    Initialize the X connection. Create and map the main window,
    initialize pixmaps and atoms.  Assumes that "dpy" has already been set by a
-   call to "XOpenDisplay", and "display_alloc" is true. 
+   call to "XOpenDisplay", and "display_alloc" is true.
 */
 
 extern void DestroyDisplay(void);
@@ -16,7 +16,7 @@ extern void ClearScreen(void);
 /* Clear the main window */
 
 extern void RedisplayScreen(void);
-/* 
+/*
    Redisplay the main window. Has to handle the help screens if one
    is currently active.
 */
@@ -31,7 +31,7 @@ extern void ShowScreen(void);
 */
 
 extern void MapChar(char, int, int, Boolean);
-/* 
+/*
    Draw a single pixmap, translating from the character map to the pixmap
    rendition. If "copy_area", also push the change through to the actual window.
 */
@@ -51,7 +51,7 @@ extern short DisplayScores(short *);
 */
 
 extern void ShowHelp(void);
-/* 
+/*
    Display the first help page, and flip help pages (one per key press)
    until a return is pressed.
 */
@@ -77,7 +77,7 @@ extern Atom wm_delete_window, wm_protocols;
 
 extern XrmDatabase rdb;
 /* The X resource database */
-	
+       
 extern Colormap cmap;
 extern Boolean ownColormap;
 

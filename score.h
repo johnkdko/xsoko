@@ -40,7 +40,7 @@ extern char *DateToASCII(time_t date);
    9 characters long. */
 
 extern short OutputScoreLines(int line1, int line2);
-/* 
+/*
    Print the scorefile lines from line1 up to line2 - 1. Print the
    total number of lines in the file and the datestamp too (as a
    time_t), followed by a line of at least 40 equal signs. Note that

@@ -107,25 +107,25 @@ short RestoreGame(void)
     else {
       savedbn = fileno(savefile);
       if (read(savedbn, &(map[0][0]), MAXROW * MAXCOL) != MAXROW * MAXCOL)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &ppos, sizeof(POS)) != sizeof(POS))
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &level, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &moves, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &pushes, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &packets, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &savepack, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &rows, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &cols, 2) != 2)
-	ret = E_READSAVE;
+        ret = E_READSAVE;
       else if (read(savedbn, &sfstat, sizeof(sfstat)) != sizeof(sfstat))
-	ret = E_READSAVE;
+        ret = E_READSAVE;
     }
 
     ppos.x = ntohs(ppos.x);

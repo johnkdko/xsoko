@@ -1,5 +1,5 @@
 /* the list of the options used to build the command line XrmDB.
- * if an option has no seperate arg, and appears on the command line, the 
+ * if an option has no seperate arg, and appears on the command line, the
  * last value in the table is what will be entered into the db.
  */
 static XrmOptionDescRec options[] = {
@@ -19,6 +19,6 @@ static XrmOptionDescRec options[] = {
   { "-pointer",    "*pointerColor",  XrmoptionSepArg,   (caddr_t)     0 },
   { "-b",          "*bitmapDir",     XrmoptionSepArg,   (caddr_t)     0 },
   { "-bitdir",     "*bitmapDir",     XrmoptionSepArg,   (caddr_t)     0 },
-  { "-display",    ".display",	     XrmoptionSepArg,	(caddr_t)     0 },
+  { "-display",    ".display",             XrmoptionSepArg,        (caddr_t)     0 },
   { "-xrm",        (char *) 0,       XrmoptionResArg,   (caddr_t)     0 }
 };

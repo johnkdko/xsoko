@@ -19,7 +19,7 @@
 #define TRY(name,expr) if (0>(expr)) { perror(name); return 0; }
 
 int lingerval = 1;
- 
+
 /* see externs.h for spec */
 extern char *qtelnet(char *hostname, int port, char *msg) {
     int sock;
@@ -30,22 +30,22 @@ extern char *qtelnet(char *hostname, int port, char *msg) {
     int retpos = 0;
     TRY("socket", (sock = socket(AF_INET, SOCK_STREAM, IPPROTO_IP)));
     TRY("setsockopt[SO_REUSEADDR,1]",
-	setsockopt(sock,
-	   SOL_SOCKET,
-	   SO_REUSEADDR,
-	   &lingerval,
-	   sizeof(lingerval)));
-    
+        setsockopt(sock,
+           SOL_SOCKET,
+           SO_REUSEADDR,
+           &lingerval,
+           sizeof(lingerval)));
+  
     if (!isdigit(hostname[0])) {
-	h = gethostbyname(hostname);
-	if (!h) { fprintf(stderr, "Unknown host: %s\n", hostname); exit(-1); }
-	else memcpy(&client.sin_addr, h->h_addr, h->h_length);
+        h = gethostbyname(hostname);
+        if (!h) { fprintf(stderr, "Unknown host: %s\n", hostname); exit(-1); }
+        else memcpy(&client.sin_addr, h->h_addr, h->h_length);
     } else {
-	int a,b,c,d;
-	unsigned long hostaddr;
-	sscanf(hostname, "%d.%d.%d.%d", &a, &b, &c, &d);
-	hostaddr = (a<<24)|(b<<16)|(c<<8)|d;
-	client.sin_addr.s_addr = htonl(hostaddr);
+        int a,b,c,d;
+        unsigned long hostaddr;
+        sscanf(hostname, "%d.%d.%d.%d", &a, &b, &c, &d);
+        hostaddr = (a<<24)|(b<<16)|(c<<8)|d;
+        client.sin_addr.s_addr = htonl(hostaddr);
     }
 
 
@@ -63,22 +63,22 @@ extern char *qtelnet(char *hostname, int port, char *msg) {
     retbuf = (char *)malloc(retmax);
 
     for(;;) {
-	int ch;
-	if (retmax == retpos) {
-	    retmax *= 2;
-	    { char *nrb = (char *)malloc(retmax);
-	      memcpy(nrb, retbuf, retmax);
-	      free(retbuf);
-	      retbuf = nrb; }
-	}
-	TRY("read", ch = read(sock, retbuf + retpos, retmax - retpos));
-	if (ch == 0) {
+        int ch;
+        if (retmax == retpos) {
+            retmax *= 2;
+            { char *nrb = (char *)malloc(retmax);
+              memcpy(nrb, retbuf, retmax);
+              free(retbuf);
+              retbuf = nrb; }
+        }
+        TRY("read", ch = read(sock, retbuf + retpos, retmax - retpos));
+        if (ch == 0) {
 #if 0
-		fprintf(stderr, "Connection closed by remote host\n");
+                fprintf(stderr, "Connection closed by remote host\n");
 #endif
-		break;
-	}
-	retpos += ch;
+                break;
+        }
+        retpos += ch;
     }
     TRY("close", close(sock));
     retbuf[retpos] = 0;

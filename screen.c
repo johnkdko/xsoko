@@ -30,38 +30,38 @@ short ReadScreen(void)
 
     while ((ret == 0) && ((c = getc(screen)) != EOF)) {
       if (c == '\n') {
-	map[rows++][j] = '\0';
-	if (rows > MAXROW)
-	  ret = E_TOMUCHROWS;
-	else {
-	  if (j > cols)
-	    cols = j;
-	  j = 0;
-	}
+        map[rows++][j] = '\0';
+        if (rows > MAXROW)
+          ret = E_TOMUCHROWS;
+        else {
+          if (j > cols)
+            cols = j;
+          j = 0;
+        }
       } else if ((c == player) || (c == playerstore)) {
-	if (ppos.x != -1)
-	  ret = E_PLAYPOS1;
-	else {
-	  ppos.x = rows;
-	  ppos.y = j;
-	  map[rows][j++] = c;
-	  if (j > MAXCOL)
-	    ret = E_TOMUCHCOLS;
-	}
+        if (ppos.x != -1)
+          ret = E_PLAYPOS1;
+        else {
+          ppos.x = rows;
+          ppos.y = j;
+          map[rows][j++] = c;
+          if (j > MAXCOL)
+            ret = E_TOMUCHCOLS;
+        }
       } else if ((c == save) || (c == packet) ||
-		 (c == wall) || (c == store) ||
-		 (c == ground)) {
-	if (c == save) {
-	  savepack++;
-	  packets++;
-	}
-	if (c == packet)
-	  packets++;
-	map[rows][j++] = c;
-	if (j > MAXCOL)
-	  ret = E_TOMUCHCOLS;
+                 (c == wall) || (c == store) ||
+                 (c == ground)) {
+        if (c == save) {
+          savepack++;
+          packets++;
+        }
+        if (c == packet)
+          packets++;
+        map[rows][j++] = c;
+        if (j > MAXCOL)
+          ret = E_TOMUCHCOLS;
       } else
-	ret = E_ILLCHAR;
+        ret = E_ILLCHAR;
     }
     fclose(screen);
     if ((ret == 0) && (ppos.x == -1))

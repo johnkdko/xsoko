@@ -105,7 +105,7 @@ short InitX(void)
       cmap = XCreateColormap(dpy, root, wa.visual, AllocNone);
       cmap_alloc = _true_;
   }
-  
+
   /* here is where we figure out the resources and set the defaults.
    * resources can be either on the command line, or in your .Xdefaults/
    * .Xresources files.  They are read in and parsed in main.c, but used
@@ -141,7 +141,7 @@ short InitX(void)
     tmpwalls = StringToBoolean(rval);
 
   /* Walls are funny.  If a alternate bitpath has been defined, assume
-   * !fancywalls unless explicitly told fancy walls.  If the default 
+   * !fancywalls unless explicitly told fancy walls.  If the default
    * bitpath is being used, you can assume fancy walls.
    */
   if(bitpath && !tmpwalls)
@@ -164,7 +164,7 @@ short InitX(void)
   if(!XStringListToTextProperty(&progname, 1, &iname))
     return E_NOMEM;
 
-  
+
   /* load in a cursor, and recolor it so it looks pretty */
   this_curs = XCreateFontCursor(dpy, DEF_CURSOR);
   cfg.pixel = curs;
@@ -178,7 +178,7 @@ short InitX(void)
   wattr.border_pixel = bord;
   wattr.backing_store = Always;
   wattr.event_mask = (KeyPressMask | ExposureMask | ButtonPressMask |
-		      ButtonReleaseMask);
+                      ButtonReleaseMask);
   wattr.cursor = this_curs;
   wattr.colormap = cmap;
 
@@ -186,7 +186,7 @@ short InitX(void)
    * can load in the bitmaps; we later resize it correctly.
    */
   win = XCreateWindow(dpy, root, 0, 0, width, height, 4,
-		      CopyFromParent, InputOutput, CopyFromParent,
+                      CopyFromParent, InputOutput, CopyFromParent,
                       (CWBackPixel | CWBorderPixel | CWBackingStore |
                        CWEventMask | CWCursor | CWColormap), &wattr);
   win_alloc = _true_;
@@ -205,7 +205,7 @@ short InitX(void)
 
   width = MAXCOL * bit_width;
   height = MAXROW * bit_height + 50;
-  
+
   /* whee, resize the window with the correct size now that we know it */
   XResizeWindow(dpy, win, width, height);
 
@@ -253,7 +253,7 @@ short InitX(void)
   ClearScreen();
   XMapWindow(dpy, win);
   RedisplayScreen();
-  
+
   return 0;
 }
 
@@ -305,15 +305,15 @@ void DestroyDisplay(void)
   }
   /* okay.. NOW we can destroy the main window and the display */
     if (win_alloc) {
-	XDestroyWindow(dpy, win);
-	win_alloc = _false_;
+        XDestroyWindow(dpy, win);
+        win_alloc = _false_;
     }
 }
 
 static Boolean full_pixmap[256];
 
 static Boolean TryBitmapFile(char *template, Pixmap *pix, char *bitpath,
-			     char *fname, int map)
+                             char *fname, int map)
 {
   unsigned int width, height;
   int dum3, dum4;
@@ -345,18 +345,18 @@ static short TryPixmapFile(char *template, Pixmap *pix, char *bitpath,
     XpmAttributes attr;
     XWindowAttributes wa;
     if (xpm_color_failed)
-	return E_NOCOLOR; /* Don't keep trying for each pixmap */
+        return E_NOCOLOR; /* Don't keep trying for each pixmap */
     if (!XGetWindowAttributes(dpy, win, &wa)) {
-	fprintf(stderr, "What? Can't get attributes of window\n");
-	abort();
+        fprintf(stderr, "What? Can't get attributes of window\n");
+        abort();
     }
     if (wa.depth < 8) {
-	/* Hopeless! Not enough colors...*/
-	return E_NOBITMAP;
+        /* Hopeless! Not enough colors...*/
+        return E_NOBITMAP;
     }
 
     attr.valuemask = XpmCloseness | XpmExactColors | XpmColorKey | XpmColormap |
-		    XpmDepth;
+                    XpmDepth;
     attr.colormap = wa.colormap;
     attr.depth = wa.depth;
     attr.color_key = XPM_COLOR;
@@ -364,12 +364,12 @@ static short TryPixmapFile(char *template, Pixmap *pix, char *bitpath,
     attr.exactColors = _false_;
     sprintf(buf, template, bitpath, fname);
     if ((ret = XpmReadFileToPixmap(dpy, win, buf, pix, NULL, &attr)) ==
-	 XpmSuccess) {
-	
-	if (attr.width > bit_width) bit_width = attr.width;
-	if (attr.height > bit_height) bit_height = attr.height;
-	full_pixmap[map] = _true_;
-	return 0;
+         XpmSuccess) {
+
+        if (attr.width > bit_width) bit_width = attr.width;
+        if (attr.height > bit_height) bit_height = attr.height;
+        full_pixmap[map] = _true_;
+        return 0;
     }
     switch(ret) {
       case XpmColorError: return 0; /* partial success */
@@ -397,34 +397,34 @@ static short TryPixmapFile(char *template, Pixmap *pix, char *bitpath,
 short LoadOneBitmap(char *fname, char *altname, Pixmap *pix, int map)
 {
     if(bitpath && *bitpath) {
-	/* we have something to try other than the default, let's do it */
+        /* we have something to try other than the default, let's do it */
 #if USE_XPM
-	switch(TryPixmapFile("%s/%s.xpm", pix, bitpath, fname, map)) {
-	  case 0: return 0;
-	  case E_NOCOLOR: return E_NOCOLOR;
-	  case E_NOBITMAP: break;
-	}
-	switch(TryPixmapFile("%s/%s.xpm", pix, bitpath, altname, map)) {
-	  case 0: return 0;
-	  case E_NOCOLOR: return E_NOCOLOR;
-	  case E_NOBITMAP: break;
-	}
+        switch(TryPixmapFile("%s/%s.xpm", pix, bitpath, fname, map)) {
+          case 0: return 0;
+          case E_NOCOLOR: return E_NOCOLOR;
+          case E_NOBITMAP: break;
+        }
+        switch(TryPixmapFile("%s/%s.xpm", pix, bitpath, altname, map)) {
+          case 0: return 0;
+          case E_NOCOLOR: return E_NOCOLOR;
+          case E_NOBITMAP: break;
+        }
 #endif
-	if (TryBitmapFile("%s/%s.xbm", pix, bitpath, fname, map)) return 0;
-	if (TryBitmapFile("%s/%s.xbm", pix, bitpath, altname, map)) return 0;
-	return E_NOBITMAP;
+        if (TryBitmapFile("%s/%s.xbm", pix, bitpath, fname, map)) return 0;
+        if (TryBitmapFile("%s/%s.xbm", pix, bitpath, altname, map)) return 0;
+        return E_NOBITMAP;
     }
 
 #if USE_XPM
       switch(TryPixmapFile("%s/%s.xpm", pix, BITPATH, fname, map)) {
-	case 0: return 0;
-	case E_NOCOLOR: return E_NOCOLOR;
-	case E_NOBITMAP: break;
+        case 0: return 0;
+        case E_NOCOLOR: return E_NOCOLOR;
+        case E_NOBITMAP: break;
       }
       switch(TryPixmapFile("%s/%s.xpm", pix, BITPATH, altname, map)) {
-	case 0: return 0;
-	case E_NOCOLOR: return E_NOCOLOR;
-	case E_NOBITMAP: break;
+        case 0: return 0;
+        case E_NOCOLOR: return E_NOCOLOR;
+        case E_NOBITMAP: break;
       }
 #endif
     if (TryBitmapFile("%s/%s.xbm", pix, BITPATH, fname, map)) return 0;
@@ -450,12 +450,12 @@ short LoadBitmaps(void)
     if ((ret = LoadOneBitmap("floor", NULL, &floor, ground))) return ret;
 
     if(optwalls) {
-	for(i = 0; i < NUM_WALLS; i++) {
-	    if ((ret = LoadOneBitmap(wallname[i], "wall", &walls[i], wall)))
-	      return ret;
-	}
+        for(i = 0; i < NUM_WALLS; i++) {
+            if ((ret = LoadOneBitmap(wallname[i], "wall", &walls[i], wall)))
+              return ret;
+        }
     } else {
-	if ((ret = LoadOneBitmap("wall", NULL, &walls[0], wall))) return ret;
+        if ((ret = LoadOneBitmap("wall", NULL, &walls[0], wall))) return ret;
     }
     return 0;
 }
@@ -560,7 +560,7 @@ void MapChar(char c, int i, int j, Boolean copy_area)
   XCopyPlane(dpy, this, work, gc, 0, 0, bit_width, bit_height, cX(j), cY(i), 1);
   if (copy_area) {
     XCopyArea(dpy, work, win, gc, cX(j), cY(i), bit_width, bit_height,
-	      cX(j), cY(i));
+              cX(j), cY(i));
   }
 }
 
@@ -664,17 +664,17 @@ Boolean WaitForEnter(void)
     XNextEvent(dpy, &xev);
     switch(xev.type) {
       case Expose:
-	RedisplayScreen();
-	break;
+        RedisplayScreen();
+        break;
       case KeyPress:
-	buf[0] = '\0';
-	XLookupString(&xev.xkey, buf, bufs, &keyhit, &compose);
-	if(buf[0]) {
-	  return (keyhit == XK_Return) ? _true_ : _false_;
-	}
-	break;
+        buf[0] = '\0';
+        XLookupString(&xev.xkey, buf, bufs, &keyhit, &compose);
+        if(buf[0]) {
+          return (keyhit == XK_Return) ? _true_ : _false_;
+        }
+        break;
       default:
-	break;
+        break;
     }
   }
 }

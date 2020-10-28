@@ -25,9 +25,9 @@
 
 /*
    ROOTDIR: The directory below which the xsokoban data files, such as
-	    the bitmaps, score file, and saved games, are stored.  I
-	    suggest "/usr/local/share/xsokoban" as a value for this
-	    variable in the installed version, but you know best...
+            the bitmaps, score file, and saved games, are stored.  I
+            suggest "/usr/local/share/xsokoban" as a value for this
+            variable in the installed version, but you know best...
 */
 #ifndef ROOTDIR
 #define ROOTDIR "."
@@ -74,8 +74,8 @@
 
 /*
    USE_XPM: Look for color pixmaps to define the appearance of the
-	    game.  This requires that you have the XPM library, which
-	    reads in ".xpm" files and produces pixmaps.
+            game.  This requires that you have the XPM library, which
+            reads in ".xpm" files and produces pixmaps.
 */
 #ifndef USE_XPM
 #define USE_XPM 1
@@ -138,9 +138,9 @@
    In "www.h", you will find definitions that will allow xsokoban to connect
    to an public xsokoban server maintained by Andrew Myers. The xsokoban
    home page is at
-    
+   
        http://xsokoban.lcs.mit.edu/xsokoban.html
-    
+   
    In order to create your own WWW xsokoban score server, a few small
    shell scripts must be used; they are not provided in this
    distribution, but can be obtained on request from andru@lcs.mit.edu.

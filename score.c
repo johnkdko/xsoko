@@ -61,7 +61,7 @@ static void CleanupScoreTable();
  */
 
 static short FindPos();
-/* Find the position for a new score in the score table */ 
+/* Find the position for a new score in the score table */
 
 static short ParseScoreText(char *text, Boolean all_users);
 static short ParseScoreLine(int i, char **text /* in out */, Boolean all_users);
@@ -108,7 +108,7 @@ static short LockScore();
    up on trying to acquire the lock nicely and start trying to break
    the lock. In theory, there are still some very unlikely ways to get
    hosed.  See comments in WriteScore about this. Portable locking over
-   NFS is hard.  
+   NFS is hard.
 
    After TIMEOUT seconds, we break the lock, assuming that the old
    lock-holder died in process. If the process that had the lock is
@@ -157,49 +157,49 @@ short LockScore()
      int i, result;
 
      for (i = 0; i < TIMEOUT; i++) {
-	  result = mkdir(LOCKFILE, 0);
-	  lock_time = time(0);
-	  if (result < 0) {
-	       if (errno == EEXIST) sleep(1);
-	       else return E_WRITESCORE;
-	  } else {
-	      break;
-	  }
+          result = mkdir(LOCKFILE, 0);
+          lock_time = time(0);
+          if (result < 0) {
+               if (errno == EEXIST) sleep(1);
+               else return E_WRITESCORE;
+          } else {
+              break;
+          }
      }
 
      if (result < 0) {
-	 struct stat s;
-	 time_t t = time(0);
-	 if (0 > stat(LOCKFILE, &s)) {
-	     fprintf(stderr, "Warning: Can't mkdir or stat %s\n", LOCKFILE);
-	     return E_WRITESCORE; /* disappeared? */
-	 }
-	 /* Check to make sure that the lock is still the same one we
-	    saw in the first place. This code assumes loosely synchronized
-	    clocks. To do it right, we'd have to create another file on
-	    the server machine, and compare timestamps. Not worth it.
-	 */
-	 if (t - s.st_ctime <= TIMEOUT) {
-	     fprintf(stderr,
-	 "Warning: some other process is mucking with the lock file\n");
-	     return E_WRITESCORE;
-	 }
-	 /* Assume that the last process to muck with the score file
-	    is dead.
-	 */
-	 fprintf(stderr, "Warning: breaking old lock\n");
-	 if (0 > rmdir(LOCKFILE)) {
-	     fprintf(stderr, "Warning: Couldn't remove old lock %s\n",
-		     LOCKFILE);
-	     return E_WRITESCORE;
-	 }
-	 result = mkdir(LOCKFILE, 0);
-	 if (result < 0) {
-	     fprintf(stderr, "Warning: Couldn't create %s\n", LOCKFILE);
-	     return E_WRITESCORE;
-	 }
+         struct stat s;
+         time_t t = time(0);
+         if (0 > stat(LOCKFILE, &s)) {
+             fprintf(stderr, "Warning: Can't mkdir or stat %s\n", LOCKFILE);
+             return E_WRITESCORE; /* disappeared? */
+         }
+         /* Check to make sure that the lock is still the same one we
+            saw in the first place. This code assumes loosely synchronized
+            clocks. To do it right, we'd have to create another file on
+            the server machine, and compare timestamps. Not worth it.
+         */
+         if (t - s.st_ctime <= TIMEOUT) {
+             fprintf(stderr,
+         "Warning: some other process is mucking with the lock file\n");
+             return E_WRITESCORE;
+         }
+         /* Assume that the last process to muck with the score file
+            is dead.
+         */
+         fprintf(stderr, "Warning: breaking old lock\n");
+         if (0 > rmdir(LOCKFILE)) {
+             fprintf(stderr, "Warning: Couldn't remove old lock %s\n",
+                     LOCKFILE);
+             return E_WRITESCORE;
+         }
+         result = mkdir(LOCKFILE, 0);
+         if (result < 0) {
+             fprintf(stderr, "Warning: Couldn't create %s\n", LOCKFILE);
+             return E_WRITESCORE;
+         }
      }
-     
+
      return 0;
 #else
      return 0;
@@ -211,11 +211,11 @@ void UnlockScore()
      DEBUG_SERVER("about to unlock score file");
 #if !WWW
      if (0 > rmdir(LOCKFILE)) {
-	 fprintf(stderr, "Warning: Couldn't remove lock %s\n", LOCKFILE);
+         fprintf(stderr, "Warning: Couldn't remove lock %s\n", LOCKFILE);
      }
 #endif
 }
-     
+
 short OutputScore(int lev)
 {
   short ret;
@@ -253,7 +253,7 @@ void DumpLinesWithHeader(int top, int bottom)
     printf("Line2: %d\n", scoreentries - top);
     printf("Date: %ld\n", (long)date_stamp);
     printf("========================================"
-	   "==============================\n");
+           "==============================\n");
     for (i = bottom; i >= top; i--) ShowScoreLine(i);
 }
 
@@ -262,32 +262,32 @@ short OutputScoreLines(int line1, int line2)
     short ret;
     DEBUG_SERVER("entering OutputScoreLines");
     if ((ret = LockScore())) {
-	DEBUG_SERVER("couldn't lock score file");
-	return ret;
+        DEBUG_SERVER("couldn't lock score file");
+        return ret;
     }
     DEBUG_SERVER("score file locked");
     ret = ReadScore();
     UnlockScore();
     DEBUG_SERVER("score file unlocked");
     if (ret == 0) {
-	int i;
-	int top, bottom;
-	DeleteLowRanks();
-	if (line1 > scoreentries) line1 = scoreentries;
-	if (line2 > scoreentries) line2 = scoreentries;
-	bottom = scoreentries - 1 - line1;
-	top = scoreentries - line2;
+        int i;
+        int top, bottom;
+        DeleteLowRanks();
+        if (line1 > scoreentries) line1 = scoreentries;
+        if (line2 > scoreentries) line2 = scoreentries;
+        bottom = scoreentries - 1 - line1;
+        top = scoreentries - line2;
 
-	for (i = top - 1; i >= 0; i--) {
-	    if (scoretable[i].lv != scoretable[top].lv) break;
-	}
-	top = i + 1;
-	for (i = bottom + 1; i < scoreentries; i++) {
-	    if (scoretable[i].lv != scoretable[bottom].lv) break;
-	}
-	bottom = i - 1;
-	    
-	DumpLinesWithHeader(top, bottom);
+        for (i = top - 1; i >= 0; i--) {
+            if (scoretable[i].lv != scoretable[top].lv) break;
+        }
+        top = i + 1;
+        for (i = bottom + 1; i < scoreentries; i++) {
+            if (scoretable[i].lv != scoretable[bottom].lv) break;
+        }
+        bottom = i - 1;
+
+        DumpLinesWithHeader(top, bottom);
     }
     return ((ret == 0) ? E_ENDGAME : ret);
 }
@@ -299,32 +299,32 @@ short MakeNewScore(char *textfile)
 
   if ((ret = LockScore()))
        return ret;
-  
+
   if (textfile) {
     char *text, *pos, *end;
     int fd;
     struct stat s;
     if (0 > stat(textfile, &s)) {
-	perror(textfile);
-	return E_FOPENSCORE;
+        perror(textfile);
+        return E_FOPENSCORE;
     }
     if (0 > (fd = open(textfile, O_RDONLY))) {
-	perror(textfile);
-	return E_FOPENSCORE;
+        perror(textfile);
+        return E_FOPENSCORE;
     }
     pos = text = (char *)malloc((size_t)s.st_size);
     end = text + s.st_size;
     while (pos < end) {
-	int n = read(fd, pos, end - pos);
-	switch(n) {
-	    case -1: perror(textfile);
-		     return E_FOPENSCORE;
-	    case 0:  fprintf(stderr, "Unexpected EOF\n");
-		     return E_FOPENSCORE;
-	    default: pos += n;
-		     break;
-		     
-	}
+        int n = read(fd, pos, end - pos);
+        switch(n) {
+            case -1: perror(textfile);
+                     return E_FOPENSCORE;
+            case 0:  fprintf(stderr, "Unexpected EOF\n");
+                     return E_FOPENSCORE;
+            default: pos += n;
+                     break;
+
+        }
     }
     (void)close(fd);
     if ((ret = ParseScoreText(text, _true_))) return ret;
@@ -414,18 +414,18 @@ static short ReadScore()
     if (read(sfdbn, &magic[0], 4) != 4) ret = E_READSCORE;
     magic[4] = 0;
     if (0 == strcmp(magic, SCORE_VERSION)) {
-	/* we have the right version */
+        /* we have the right version */
     } else {
-	if (0 == strcmp(magic, "xs01")) {
-	    fprintf(stderr, "Warning: old-style score file\n");
-	    return ReadOldScoreFile01();
-	} else {
-	    fprintf(stderr, "Error: unrecognized score file format. May be"
-			    "  obsolete, or else maybe this program is.\n");
-	    ret = E_READSCORE;
-	    (void)close(ret);
-	    return ret;
-	}
+        if (0 == strcmp(magic, "xs01")) {
+            fprintf(stderr, "Warning: old-style score file\n");
+            return ReadOldScoreFile01();
+        } else {
+            fprintf(stderr, "Error: unrecognized score file format. May be"
+                            "  obsolete, or else maybe this program is.\n");
+            ret = E_READSCORE;
+            (void)close(ret);
+            return ret;
+        }
     }
     if (read(sfdbn, &scoreentries, 2) != 2)
       ret = E_READSCORE;
@@ -433,7 +433,7 @@ static short ReadScore()
       scoreentries = ntohs(scoreentries);
       tmp = scoreentries * sizeof(scoretable[0]);
       if (read(sfdbn, &(scoretable[0]), tmp) != tmp)
-	ret = E_READSCORE;
+        ret = E_READSCORE;
 
       /* swap up for little-endian machines */
       for (tmp = 0; tmp < scoreentries; tmp++) ntohs_entry(&scoretable[tmp]);
@@ -454,19 +454,19 @@ short ReadOldScoreFile01()
     else {
       int tmp;
       struct old_st_entry *t = (struct old_st_entry *)malloc(scoreentries *
-		sizeof(struct old_st_entry));
+                sizeof(struct old_st_entry));
       scoreentries = ntohs(scoreentries);
       tmp = scoreentries * sizeof(t[0]);
       if (read(sfdbn, &t[0], tmp) != tmp)
-	ret = E_READSCORE;
+        ret = E_READSCORE;
 
       /* swap up for little-endian machines */
       for (tmp = 0; tmp < scoreentries; tmp++) {
-	scoretable[tmp].lv = ntohs(t[tmp].lv);
-	scoretable[tmp].mv = ntohs(t[tmp].mv);
-	scoretable[tmp].ps = ntohs(t[tmp].ps);
-	strncpy(scoretable[tmp].user, t[tmp].user, MAXUSERNAME);
-	scoretable[tmp].date = (int)now;
+        scoretable[tmp].lv = ntohs(t[tmp].lv);
+        scoretable[tmp].mv = ntohs(t[tmp].mv);
+        scoretable[tmp].ps = ntohs(t[tmp].ps);
+        strncpy(scoretable[tmp].user, t[tmp].user, MAXUSERNAME);
+        scoretable[tmp].date = (int)now;
       }
     }
     (void)close(sfdbn);
@@ -479,23 +479,23 @@ int SolnRank(int j, Boolean *ignore)
     int i, rank = 1;
     unsigned short level = scoretable[j].lv;
     for (i = 0; i < j; i++) {
-	if (VALID_ENTRY(i) &&
-	    !(ignore && ignore[i]) && scoretable[i].lv == level) {
-	    if (scoretable[i].mv == scoretable[j].mv &&
-		scoretable[i].ps == scoretable[j].ps &&
-		0 == strcmp(scoretable[i].user, scoretable[j].user)) {
-		    rank = BADSOLN;
-	    }
-	    if ((scoretable[i].mv < scoretable[j].mv &&
-		 scoretable[i].ps <= scoretable[j].ps) ||
-	        (scoretable[i].mv <= scoretable[j].mv &&
-		 scoretable[i].ps < scoretable[j].ps)) {
-		if (0 == strcmp(scoretable[i].user, scoretable[j].user))
-		    rank = BADSOLN;
-		else
-		    rank++;
-	    }
-	}
+        if (VALID_ENTRY(i) &&
+            !(ignore && ignore[i]) && scoretable[i].lv == level) {
+            if (scoretable[i].mv == scoretable[j].mv &&
+                scoretable[i].ps == scoretable[j].ps &&
+                0 == strcmp(scoretable[i].user, scoretable[j].user)) {
+                    rank = BADSOLN;
+            }
+            if ((scoretable[i].mv < scoretable[j].mv &&
+                 scoretable[i].ps <= scoretable[j].ps) ||
+                (scoretable[i].mv <= scoretable[j].mv &&
+                 scoretable[i].ps < scoretable[j].ps)) {
+                if (0 == strcmp(scoretable[i].user, scoretable[j].user))
+                    rank = BADSOLN;
+                else
+                    rank++;
+            }
+        }
     }
     return rank;
 }
@@ -505,11 +505,11 @@ static void DeleteLowRanks()
     int i;
     Boolean deletable[MAXSCOREENTRIES];
     for (i = 0; i < scoreentries; i++) {
-	deletable[i] = _false_;
-	if (SolnRank(i, deletable) > MAXSOLNRANK &&
-	    0 != strcmp(scoretable[i].user, username)) {
-	      deletable[i] = _true_;
-	}
+        deletable[i] = _false_;
+        if (SolnRank(i, deletable) > MAXSOLNRANK &&
+            0 != strcmp(scoretable[i].user, username)) {
+              deletable[i] = _true_;
+        }
     }
     FlushDeletedScores(deletable);
 }
@@ -519,15 +519,15 @@ static void CleanupScoreTable()
     int i;
     Boolean deletable[MAXSCOREENTRIES];
     for (i = 0; i < scoreentries; i++) {
-	deletable[i] = _false_;
-	if (SolnRank(i, deletable) > MAXSOLNRANK) {
-	    char *user = scoretable[i].user;
-	    int j;
-	    for (j = 0; j < i; j++) {
-		if (0 == strcmp(scoretable[j].user, user))
-		  deletable[i] = _true_;
-	    }
-	}
+        deletable[i] = _false_;
+        if (SolnRank(i, deletable) > MAXSOLNRANK) {
+            char *user = scoretable[i].user;
+            int j;
+            for (j = 0; j < i; j++) {
+                if (0 == strcmp(scoretable[j].user, user))
+                  deletable[i] = _true_;
+            }
+        }
     }
     FlushDeletedScores(deletable);
 }
@@ -536,8 +536,8 @@ static void FlushDeletedScores(Boolean delete[])
 {
     int i, k = 0;
     for (i = 0; i < scoreentries; i++) {
-	if (i != k) CopyEntry(k, i);
-	if (!delete[i]) k++;
+        if (i != k) CopyEntry(k, i);
+        if (!delete[i]) k++;
     }
     scoreentries = k;
 }
@@ -546,10 +546,10 @@ static short MakeScore()
 {
   short pos, i;
 
-  pos = FindPos();		/* find the new score position */
-  if (pos > -1) {		/* score table not empty */
+  pos = FindPos();                /* find the new score position */
+  if (pos > -1) {                /* score table not empty */
       for (i = scoreentries; i > pos; i--)
-	CopyEntry(i, i - 1);
+        CopyEntry(i, i - 1);
     } else {
       pos = scoreentries;
     }
@@ -587,11 +587,11 @@ static short FindPos()
 
   for (i = 0; (i < scoreentries) && (!found); i++)
     found = ((scorelevel > scoretable[i].lv) ||
-	     ((scorelevel == scoretable[i].lv) &&
-	      (scoremoves < scoretable[i].mv)) ||
-	     ((scorelevel == scoretable[i].lv) &&
-	      (scoremoves == scoretable[i].mv) &&
-	      (scorepushes < scoretable[i].ps)));
+             ((scorelevel == scoretable[i].lv) &&
+              (scoremoves < scoretable[i].mv)) ||
+             ((scorelevel == scoretable[i].lv) &&
+              (scoremoves == scoretable[i].mv) &&
+              (scorepushes < scoretable[i].ps)));
   return ((found) ? i - 1 : -1);
 }
 
@@ -629,7 +629,7 @@ static short WriteScore()
 {
   short ret = 0;
   int tmp;
-    
+
   char tempfile[MAXPATHLEN];
   strcpy(tempfile, tempnm);
 
@@ -648,54 +648,54 @@ static short WriteScore()
 
       /* swap around for little-endian machines */
       for (tmp = 0; tmp < scoreentries; tmp++) {
-	scoretable[tmp].lv = htons(scoretable[tmp].lv);
-	scoretable[tmp].mv = htons(scoretable[tmp].mv);
-	scoretable[tmp].ps = htons(scoretable[tmp].ps);
-	scoretable[tmp].date = htonl(scoretable[tmp].date);
+        scoretable[tmp].lv = htons(scoretable[tmp].lv);
+        scoretable[tmp].mv = htons(scoretable[tmp].mv);
+        scoretable[tmp].ps = htons(scoretable[tmp].ps);
+        scoretable[tmp].date = htonl(scoretable[tmp].date);
       }
       tmp = scoreentries;
       while (tmp > 0) {
-	int n = fwrite(&(scoretable[scoreentries - tmp]),
-			sizeof(struct st_entry),
-			tmp,
-			scorefile);
-	if (n <= 0 && errno) {
-	    perror(tempfile);
-	    ret = E_WRITESCORE;
-	    break;
-	}
-	tmp -= n;
+        int n = fwrite(&(scoretable[scoreentries - tmp]),
+                        sizeof(struct st_entry),
+                        tmp,
+                        scorefile);
+        if (n <= 0 && errno) {
+            perror(tempfile);
+            ret = E_WRITESCORE;
+            break;
+        }
+        tmp -= n;
       }
 
       /* and swap back for the rest of the run ... */
       for (tmp = 0; tmp < scoreentries; tmp++) {
-	scoretable[tmp].lv = ntohs(scoretable[tmp].lv);
-	scoretable[tmp].mv = ntohs(scoretable[tmp].mv);
-	scoretable[tmp].ps = ntohs(scoretable[tmp].ps);
-	scoretable[tmp].date = ntohl(scoretable[tmp].date);
+        scoretable[tmp].lv = ntohs(scoretable[tmp].lv);
+        scoretable[tmp].mv = ntohs(scoretable[tmp].mv);
+        scoretable[tmp].ps = ntohs(scoretable[tmp].ps);
+        scoretable[tmp].date = ntohl(scoretable[tmp].date);
       }
     }
     if (EOF == fflush(scorefile)) {
-	ret = E_WRITESCORE;
-	perror(tempfile);
+        ret = E_WRITESCORE;
+        perror(tempfile);
     } else
     if (0 > fsync(sfdbn)) {
-	ret = E_WRITESCORE;
-	perror(tempfile);
+        ret = E_WRITESCORE;
+        perror(tempfile);
     }
     if (EOF == fclose(scorefile)) {
-	ret = E_WRITESCORE;
-	perror(tempfile);
+        ret = E_WRITESCORE;
+        perror(tempfile);
     }
     if (ret == 0) {
       time_t t = time(0);
       if (t - lock_time >= TIMEOUT) {
-	  fprintf(stderr,
+          fprintf(stderr,
   "Took more than %d seconds trying to write score file; lock expired.\n",
-		  TIMEOUT);
-	  ret = E_WRITESCORE;
+                  TIMEOUT);
+          ret = E_WRITESCORE;
       } else if (0 > rename(tempfile, SCOREFILE)) {
-	  ret = E_WRITESCORE;
+          ret = E_WRITESCORE;
       }
     }
     if (ret != 0) (void)unlink(tempfile);
@@ -705,11 +705,11 @@ static short WriteScore()
 
 #ifdef HAVE_NL_LANGINFO
 int mos[] = { ABMON_1, ABMON_2, ABMON_3, ABMON_4, ABMON_5, ABMON_6,
-	      ABMON_7, ABMON_8, ABMON_9, ABMON_10, ABMON_11, ABMON_12 };
+              ABMON_7, ABMON_8, ABMON_9, ABMON_10, ABMON_11, ABMON_12 };
 #define MONTH(x) nl_langinfo(mos[x])
 #else
 char *mos[] = { "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-		"Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+                "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
 #define MONTH(x) mos[x]
 #endif
 
@@ -718,23 +718,23 @@ char date_buf[10];
 char *DateToASCII(time_t date)
 {
     if (datemode) {
-	sprintf(date_buf, "%d", (int)date);
+        sprintf(date_buf, "%d", (int)date);
     } else {
-	struct tm then, now;
-	time_t dnow = time(0);
-	now = *localtime(&dnow);
-	then = *localtime(&date);
-	if (then.tm_year != now.tm_year) {
-	    sprintf(date_buf, "%s %d", MONTH(then.tm_mon), then.tm_year % 100);
-	} else if (then.tm_mon != now.tm_mon ||
-		   then.tm_mday != now.tm_mday) {
-	    sprintf(date_buf, "%d %s", then.tm_mday, MONTH(then.tm_mon));
-	} else {
-	    int hour = then.tm_hour % 12;
-	    if (hour == 0) hour = 12;
-	    sprintf(date_buf, "%d:%.2d%s", hour, then.tm_min,
-				(then.tm_hour < 12) ? "am" : "pm");
-	}
+        struct tm then, now;
+        time_t dnow = time(0);
+        now = *localtime(&dnow);
+        then = *localtime(&date);
+        if (then.tm_year != now.tm_year) {
+            sprintf(date_buf, "%s %d", MONTH(then.tm_mon), then.tm_year % 100);
+        } else if (then.tm_mon != now.tm_mon ||
+                   then.tm_mday != now.tm_mday) {
+            sprintf(date_buf, "%d %s", then.tm_mday, MONTH(then.tm_mon));
+        } else {
+            int hour = then.tm_hour % 12;
+            if (hour == 0) hour = 12;
+            sprintf(date_buf, "%d:%.2d%s", hour, then.tm_min,
+                                (then.tm_hour < 12) ? "am" : "pm");
+        }
     }
     return date_buf;
 }
@@ -748,8 +748,8 @@ static void ShowScoreLine(int i)
     else TRY("printf", printf("    "));
     TRY("printf",
     fprintf(stdout, " %32s %4d     %4d     %4d   %s\n", scoretable[i].user,
-	    scoretable[i].lv, scoretable[i].mv, scoretable[i].ps,
-	    DateToASCII((time_t)scoretable[i].date)));
+            scoretable[i].lv, scoretable[i].mv, scoretable[i].ps,
+            DateToASCII((time_t)scoretable[i].date)));
 }
 
 
@@ -760,30 +760,30 @@ static void ShowScore(int level)
     if (!headermode) {
         TRY("printf",
             printf("Rank                             User  Level   Moves"
-	           "  Pushes   Date\n"));
+                   "  Pushes   Date\n"));
         TRY("printf",
             printf("==========================================="
-		   "===========================\n"));
-	for (i = 0; i < scoreentries; i++) {
-	    if (level == 0 || scoretable[i].lv == level) {
-		ShowScoreLine(i);
-	    }
-	}
+                   "===========================\n"));
+        for (i = 0; i < scoreentries; i++) {
+            if (level == 0 || scoretable[i].lv == level) {
+                ShowScoreLine(i);
+            }
+        }
     } else {
-	int top = -1, bottom = -1;
-	DeleteLowRanks();
-	if (level == 0) {
-	    top = 0;
-	    bottom = scoreentries - 1;
-	} else {
-	    for (i = 0; i < scoreentries; i++) {
-		if (scoretable[i].lv == level) {
-		    if (top == -1) top = i;
-		    bottom = i;
-		}
-	    }
-	}
-	DumpLinesWithHeader(top, bottom);
+        int top = -1, bottom = -1;
+        DeleteLowRanks();
+        if (level == 0) {
+            top = 0;
+            bottom = scoreentries - 1;
+        } else {
+            for (i = 0; i < scoreentries; i++) {
+                if (scoretable[i].lv == level) {
+                    if (top == -1) top = i;
+                    bottom = i;
+                }
+            }
+        }
+        DumpLinesWithHeader(top, bottom);
     }
 }
 
@@ -800,37 +800,37 @@ static void CopyEntry(short i1, short i2)
 char *getline(char *text, char *linebuf, int bufsiz)
 {
     if (*text == 0) {
-	*linebuf = 0;
-	return 0;
+        *linebuf = 0;
+        return 0;
     }
     bufsiz--; /* for trailing null */
     while (*text != '\n' && *text != '\r' && *text && bufsiz != 0) {
-	*linebuf++ = *text++;
-	bufsiz--;
+        *linebuf++ = *text++;
+        bufsiz--;
     }
     if (text[0] == '\r' && text[1] == '\n') text++; /* skip over CRLF */
     *linebuf = 0;
     return (*text) ? text + 1 : text ;
-	/* point to next line or final null */
+        /* point to next line or final null */
 }
 
 #if WWW
 static int blurt(char *buf, int bufptr, int count, char c)
 {
     if (count == 1) {
-	buf[bufptr++] = c;
+        buf[bufptr++] = c;
     } else if ((count & 1) && (count <= 9)) {
-	buf[bufptr++] = '0' + count;
-	buf[bufptr++] = c;
+        buf[bufptr++] = '0' + count;
+        buf[bufptr++] = c;
     } else {
-	while (count >= 2) {
-	    int digit = count/2;
-	    if (digit > 9) digit = 9;
-	    count -= 2 * digit;
-	    if (digit>1) buf[bufptr++] = '0' + digit;
-	    buf[bufptr++] = toupper(c);
-	}
-	if (count) buf[bufptr++] = c;
+        while (count >= 2) {
+            int digit = count/2;
+            if (digit > 9) digit = 9;
+            count -= 2 * digit;
+            if (digit>1) buf[bufptr++] = '0' + digit;
+            buf[bufptr++] = toupper(c);
+        }
+        if (count) buf[bufptr++] = c;
     }
     return bufptr;
 }
@@ -842,14 +842,14 @@ static int compress_moves(char *buf)
     int count = 0;
     char lastc = 0;
     for (i = 0; i < moves; i++) {
-	char c = move_history[i];
-	if (c != lastc && count) {
-	    bufptr = blurt(buf, bufptr, count, lastc);
-	    count = 1;
-	} else {
-	    count++;
-	}
-	lastc = c;
+        char c = move_history[i];
+        if (c != lastc && count) {
+            bufptr = blurt(buf, bufptr, count, lastc);
+            count = 1;
+        } else {
+            count++;
+        }
+        lastc = c;
     }
     bufptr = blurt(buf, bufptr, count, lastc);
     assert(bufptr <= MOVE_HISTORY_SIZE);
@@ -864,38 +864,38 @@ static char *subst_names(char const *template)
     char buffer[4096];
     char *buf = &buffer[0];
     while (*template) {
-	 if (*template != '$') {
-	    *buf++ = *template++;
-	 } else {
-	    template++;
-	    switch(*template++) {
-		case 'L':
-		    sprintf(buf, "%d", (int)level);
-		    buf += strlen(buf);
-		    break;
-		case 'U':
-		    strcpy(buf, username);
-		    buf += strlen(username);
-		    break;
-		case 'M':
-		    strcpy(buf, movelist);
-		    buf += strlen(movelist);
-		    break;
-		case 'N':
-		    sprintf(buf, "%d", movelen);
-		    buf += strlen(buf);
-		    break;
+         if (*template != '$') {
+            *buf++ = *template++;
+         } else {
+            template++;
+            switch(*template++) {
+                case 'L':
+                    sprintf(buf, "%d", (int)level);
+                    buf += strlen(buf);
+                    break;
+                case 'U':
+                    strcpy(buf, username);
+                    buf += strlen(username);
+                    break;
+                case 'M':
+                    strcpy(buf, movelist);
+                    buf += strlen(movelist);
+                    break;
+                case 'N':
+                    sprintf(buf, "%d", movelen);
+                    buf += strlen(buf);
+                    break;
 #if 0
-		case 'R':
-		    strcpy(buf, url);
-		    buf += strlen(url);
-		    break;
+                case 'R':
+                    strcpy(buf, url);
+                    buf += strlen(url);
+                    break;
 #endif
-		case '$':
-		    *buf++ = '$';
-		    break;
-	    }
-	 }
+                case '$':
+                    *buf++ = '$';
+                    break;
+            }
+         }
     }
     *buf = 0;
     return strdup(buffer);
@@ -909,27 +909,27 @@ short WriteScore_WWW()
     char *cmd;
     char *result;
     if (0 == strcmp(HERE, "@somewhere.somedomain")) {
-	fprintf(stderr, "In order to save a score, fix the configuration\n"
-			"variable HERE (in config.h) and recompile.\n");
-	return E_WRITESCORE;
+        fprintf(stderr, "In order to save a score, fix the configuration\n"
+                        "variable HERE (in config.h) and recompile.\n");
+        return E_WRITESCORE;
     }
     buflen = compress_moves(movelist);
     movelen = buflen;
     movelist[movelen] = 0;
 #if 0
     fprintf(stderr, "compressed %d moves to %d characters\n",
-		    moves, movelen);
+                    moves, movelen);
 #endif
     cmd = subst_names(www_score_command);
     result = qtelnet(WWWHOST, WWWPORT, cmd);
     free(cmd);
     if (result) {
 #if 0
-	fprintf(stderr, "%s", result);
+        fprintf(stderr, "%s", result);
 #endif
-	free(result);
+        free(result);
     } else {
-	return E_WRITESCORE;
+        return E_WRITESCORE;
     }
     return 0;
 }
@@ -938,8 +938,8 @@ char *skip_past_header(char *text)
 {
     char line[256];
     do {
-	text = getline(text, line, sizeof(line));
-	if (!text) return 0;
+        text = getline(text, line, sizeof(line));
+        if (!text) return 0;
     } while (0 != strcmp(line, ""));
     return text;
 }
@@ -985,10 +985,10 @@ static short ParseUserLevel(char *text, short *lv)
     text = getline(text, line, sizeof(line));
     if (!text) return E_READSCORE;
     if (0 == strncmp(line, "Level: ", 7)) {
-	*lv = atoi(&line[7]);
-	return 0;
+        *lv = atoi(&line[7]);
+        return 0;
     } else {
-	return E_READSCORE;
+        return E_READSCORE;
     }
 }
 
@@ -998,12 +998,12 @@ static void DeleteAllEntries()
     for (i = 0; i < scoreentries; i++) scoretable[i].user[0] = 0;
 }
 
-#define GRAB(tag, stmt) 					\
-    text = getline(text, line, sizeof(line)); 			\
-    if (!text) return E_READSCORE; 		 		\
-    if (0 == strncmp(line, tag, strlen(tag))) { stmt; } 	\
+#define GRAB(tag, stmt)                                         \
+    text = getline(text, line, sizeof(line));                         \
+    if (!text) return E_READSCORE;                                  \
+    if (0 == strncmp(line, tag, strlen(tag))) { stmt; }         \
     else return E_READSCORE;
-    
+
 short FetchScoreLevel_WWW(int *line1 /*out*/, int *line2 /*out*/)
 {
     char *start, *text, *cmd = subst_names(WWWGETSCORELEVELPATH);
@@ -1047,19 +1047,19 @@ short ParsePartialScore(char *text, int *line1, int *line2)
 
     if (newdate == 0) return E_READSCORE;
     if (newdate != date_stamp) {
-	DeleteAllEntries();
-	outofdate = _true_;
+        DeleteAllEntries();
+        outofdate = _true_;
     }
 
     date_stamp = newdate;
 
     for (i = *line1; i < *line2; i++) {
-	if ((ret = ParseScoreLine(scoreentries - i - 1, &text, _true_))
-	     || !text)
-	{
-	    DeleteAllEntries();
-	    return E_READSCORE;
-	}
+        if ((ret = ParseScoreLine(scoreentries - i - 1, &text, _true_))
+             || !text)
+        {
+            DeleteAllEntries();
+            return E_READSCORE;
+        }
     }
     if (ret == 0 && outofdate) return E_OUTOFDATE;
     else return ret;
@@ -1070,13 +1070,13 @@ static short ParseScoreText(char *text, Boolean allusers)
 {
     char line[256];
     do {
-	text = getline(text, line, sizeof(line));
-	if (!text) return E_READSCORE;
+        text = getline(text, line, sizeof(line));
+        if (!text) return E_READSCORE;
     } while (line[0] != '=');
     scoreentries = 0;
     while (text) {
-	ParseScoreLine(scoreentries, &text, allusers);
-	if (VALID_ENTRY(scoreentries)) scoreentries++;
+        ParseScoreLine(scoreentries, &text, allusers);
+        if (VALID_ENTRY(scoreentries)) scoreentries++;
     }
     return 0;
 }
@@ -1098,26 +1098,26 @@ static short ParseScoreLine(int i, char **text /* in out */, Boolean all_users)
     user = strtok(line + 4, ws);
     if (!user) { *text = 0; return 0; }
     if (all_users || rank != 0 || 0 == strcmp(user, username)) {
-	level = atoi(strtok(0, ws)); if (!level) return E_READSCORE;
-	moves = atoi(strtok(0, ws)); if (!moves) return E_READSCORE;
-	pushes = atoi(strtok(0, ws)); if (!pushes) return E_READSCORE;
-	date_str = strtok(0, ws);
-	if (date_str) date = (time_t)atoi(date_str);
-	if (!date) {
-	    date = time(0);
-	    if (!baddate) {
-		baddate = _true_;
-		fprintf(stderr,
-			"Warning: Bad or missing date in ASCII scores\n");
-	    }
-	}
-	strncpy(scoretable[i].user, user, MAXUSERNAME);
-	scoretable[i].lv = (unsigned short)level;
-	scoretable[i].mv = (unsigned short)moves;
-	scoretable[i].ps = (unsigned short)pushes;
-	scoretable[i].date = date;
+        level = atoi(strtok(0, ws)); if (!level) return E_READSCORE;
+        moves = atoi(strtok(0, ws)); if (!moves) return E_READSCORE;
+        pushes = atoi(strtok(0, ws)); if (!pushes) return E_READSCORE;
+        date_str = strtok(0, ws);
+        if (date_str) date = (time_t)atoi(date_str);
+        if (!date) {
+            date = time(0);
+            if (!baddate) {
+                baddate = _true_;
+                fprintf(stderr,
+                        "Warning: Bad or missing date in ASCII scores\n");
+            }
+        }
+        strncpy(scoretable[i].user, user, MAXUSERNAME);
+        scoretable[i].lv = (unsigned short)level;
+        scoretable[i].mv = (unsigned short)moves;
+        scoretable[i].ps = (unsigned short)pushes;
+        scoretable[i].date = date;
     } else {
-	scoretable[i].user[0] = 0;
+        scoretable[i].user[0] = 0;
     }
     return 0;
 }
@@ -1130,19 +1130,19 @@ int FindCurrent()
 {
     int i;
     for (i = 0; i < scoreentries; i++) {
-	 if (0 == strcmp(scoretable[i].user, username) &&
-	     (unsigned short)level == scoretable[i].lv) {
-	     return i;
-	 }
+         if (0 == strcmp(scoretable[i].user, username) &&
+             (unsigned short)level == scoretable[i].lv) {
+             return i;
+         }
     }
 /* Find largest of smaller-numbered levels */
     for (i = 0; i < scoreentries; i++)
-	 if (scoretable[i].user[0] &&
-	     (unsigned short)level >= scoretable[i].lv) return i;
+         if (scoretable[i].user[0] &&
+             (unsigned short)level >= scoretable[i].lv) return i;
 /* Find smallest of larger-numbered levels */
     for (i = scoreentries - 1; i >= 0; i--)
-	 if (scoretable[i].user[0] &&
-	     (unsigned short)level < scoretable[i].lv) return i;
+         if (scoretable[i].user[0] &&
+             (unsigned short)level < scoretable[i].lv) return i;
     return -1; /* Couldn't find it at all */
 }
 

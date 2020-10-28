@@ -54,29 +54,29 @@ Boolean GetColorResource(char *res, unsigned long *cP)
 /* Uses the global "cmap" to look up colors. Call exit() if no color
    can be found. XXX Yuck */
 unsigned long GetColorOrDefault(Display *dpy,
-				char *resource_name,
-				int depth,
-				char *default_name_8,
-				Boolean default_white_2)
+                                char *resource_name,
+                                int depth,
+                                char *default_name_8,
+                                Boolean default_white_2)
 {
     XColor c;
     unsigned long pixel;
     if (GetColorResource(resource_name, &pixel)) {
-	return pixel;
+        return pixel;
     } else {
-	char *val;
-	if (depth >= 8)
-	  val = default_name_8;
-	else
-	  val = default_white_2 ? "white" : "black";
-	if (XParseColor(dpy, cmap, val, &c) &&
-	    XAllocColor(dpy, cmap, &c))
-	  return c.pixel;
-	if (XParseColor(dpy, cmap, default_white_2 ? "white" : "black", &c) &&
-	    XAllocColor(dpy, cmap, &c))
-	  return c.pixel;
-	fprintf(stderr, "Cannot obtain color for %s\n", resource_name);
-	exit(EXIT_FAILURE);
+        char *val;
+        if (depth >= 8)
+          val = default_name_8;
+        else
+          val = default_white_2 ? "white" : "black";
+        if (XParseColor(dpy, cmap, val, &c) &&
+            XAllocColor(dpy, cmap, &c))
+          return c.pixel;
+        if (XParseColor(dpy, cmap, default_white_2 ? "white" : "black", &c) &&
+            XAllocColor(dpy, cmap, &c))
+          return c.pixel;
+        fprintf(stderr, "Cannot obtain color for %s\n", resource_name);
+        exit(EXIT_FAILURE);
     }
 }
 
@@ -87,7 +87,7 @@ XFontStruct *GetFontResource(char *font)
     if (!rval) rval = DEF_FONT;
     finfo = XLoadQueryFont(dpy, rval);
     if (!finfo) {
-	finfo = XLoadQueryFont(dpy, "fixed");
+        finfo = XLoadQueryFont(dpy, "fixed");
     }
     return finfo;
 }

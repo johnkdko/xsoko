@@ -38,9 +38,9 @@ Boolean ownColormap = _false_, datemode = _false_, headermode = _false_;
 static short optlevel = 0, userlevel = 0;
 static short line1 = 0, line2 = 0;
 static Boolean opt_show_score = _false_, opt_make_score = _false_,
-	       optrestore = _false_, owner = _false_,
-	       opt_verify = _false_, opt_partial_score = _false_,
-	       opt_user_level = _false_;
+               optrestore = _false_, owner = _false_,
+               opt_verify = _false_, opt_partial_score = _false_,
+               opt_user_level = _false_;
 static struct passwd *pwd;
 
 
@@ -82,65 +82,65 @@ void main(int argc, char **argv)
 /* If running in Web mode, append HERE to the username. */
     if (!username) {
 /* username might have already been set by the X resource mechanism */
-	char *here = HERE;
-	char *namebuf = (char *)malloc(strlen(pwd->pw_name) + strlen(here) + 1);
-	strcpy(namebuf, pwd->pw_name);
-	strcat(namebuf, here);
-	username = FixUsername(namebuf);
-	free(namebuf);
+        char *here = HERE;
+        char *namebuf = (char *)malloc(strlen(pwd->pw_name) + strlen(here) + 1);
+        strcpy(namebuf, pwd->pw_name);
+        strcat(namebuf, here);
+        username = FixUsername(namebuf);
+        free(namebuf);
     } else {
-	username = FixUsername(username);
+        username = FixUsername(username);
     }
 #endif
     /* see if we are the owner */
     owner = (strcmp(username, OWNER) == 0) ? _true_ : _false_;
     if (ret == 0) {
       if (opt_show_score) {
-	DEBUG_SERVER("sending score file");
-	ret = OutputScore(optlevel);
+        DEBUG_SERVER("sending score file");
+        ret = OutputScore(optlevel);
       } else if (opt_verify) {
-	DEBUG_SERVER("verifying score");
-	ret = VerifyScore(optlevel);
+        DEBUG_SERVER("verifying score");
+        ret = VerifyScore(optlevel);
       } else if (opt_partial_score) {
-	ret = OutputScoreLines(line1, line2);
+        ret = OutputScoreLines(line1, line2);
       } else if (opt_make_score) {
-	if (owner) {
-	  /* make sure of that, shall we? */
-	  ret = GetGamePassword();
-	  if (ret == 0)
-	    ret = MakeNewScore(optfile);
-	} else
-	  /* sorry, BAD owner */
-	  ret = E_NOSUPER;
+        if (owner) {
+          /* make sure of that, shall we? */
+          ret = GetGamePassword();
+          if (ret == 0)
+            ret = MakeNewScore(optfile);
+        } else
+          /* sorry, BAD owner */
+          ret = E_NOSUPER;
       } else if (optrestore) {
-	ret = RestoreGame();
+        ret = RestoreGame();
       } else if (opt_user_level) {
-	ret = GetUserLevel(&userlevel);
-	if (ret == 0) {
-	    printf("Level: %d\n", userlevel);
-	    ret = E_ENDGAME;
-	}
+        ret = GetUserLevel(&userlevel);
+        if (ret == 0) {
+            printf("Level: %d\n", userlevel);
+            ret = E_ENDGAME;
+        }
       } else {
-	ret = GetUserLevel(&userlevel);
-	if (ret == 0) {
-	    if (optlevel > 0) {
+        ret = GetUserLevel(&userlevel);
+        if (ret == 0) {
+            if (optlevel > 0) {
 #if !ANYLEVEL
-		if (userlevel < optlevel) {
-		    if (owner) {
-			/* owners can play any level (but not score),
-			 * which is useful for testing out new boards.
-			 */
-			level = optlevel;
-			scoring = _false_;
-		    } else {
-			ret = E_LEVELTOOHIGH;
-		    }
-		} else
+                if (userlevel < optlevel) {
+                    if (owner) {
+                        /* owners can play any level (but not score),
+                         * which is useful for testing out new boards.
+                         */
+                        level = optlevel;
+                        scoring = _false_;
+                    } else {
+                        ret = E_LEVELTOOHIGH;
+                    }
+                } else
 #endif
-		  level = optlevel;
-	  } else
-	    level = userlevel;
-	}
+                  level = optlevel;
+          } else
+            level = userlevel;
+        }
       }
     }
   }
@@ -161,8 +161,8 @@ void main(int argc, char **argv)
   {
   case E_ENDGAME:
   case E_SAVED:
-	ret = 0;	/* normal exits */
-	break;
+        ret = 0;        /* normal exits */
+        break;
   }
   DEBUG_SERVER("ending");
   exit(ret);
@@ -178,8 +178,8 @@ static char *FixUsername(char *name)
     strncpy(namebuf, name, MAXUSERNAME);
     namebuf[MAXUSERNAME-1] = 0;
     while (*c) {
-	if (!isprint(*c) || *c == ' ' || *c == ',') *c = '_';
-	c++;
+        if (!isprint(*c) || *c == ' ' || *c == ',') *c = '_';
+        c++;
     }
     return strdup(namebuf);
 }
@@ -187,14 +187,14 @@ static char *FixUsername(char *name)
 static Boolean mode_selected()
 {
     return (opt_show_score || opt_make_score || optrestore || (optlevel > 0) ||
-	     opt_verify || opt_partial_score || opt_user_level)
-	   ? _true_ : _false_;
+             opt_verify || opt_partial_score || opt_user_level)
+           ? _true_ : _false_;
 }
-	     
+
 /* Oh boy, the fun stuff.. Follow along boys and girls as we parse the command
  * line up into little bitty pieces and merge in all the xdefaults that we
  * need.
- * 
+ *
  * May set "username" to some value.
  */
 short CheckCommandLine(int *argcP, char **argv)
@@ -210,7 +210,7 @@ short CheckCommandLine(int *argcP, char **argv)
 
   /* build an XrmDB from the command line based on the options (options.h) */
   XrmParseCommand(&command, options, sizeof(options)/sizeof(*options),
-		  progname, argcP, argv);
+                  progname, argcP, argv);
 
   /* okay, we now have the X command line options parsed, we might as well
    * make sure we need to go further before we do.  These command line options
@@ -221,76 +221,76 @@ short CheckCommandLine(int *argcP, char **argv)
     if (argv[option][0] == '-') {
       char *optarg;
       switch(argv[option][1]) {
-	case 's':
-	  if (mode_selected()) return E_USAGE;
-	  opt_show_score = _true_;
-	  optarg = &argv[option][2];
-	  if (!isdigit(*optarg) && argv[option+1] && isdigit(argv[option+1][0]))
-	  {
-	    optarg = &argv[option+1][0];
-	    option++;
-	  }
-	  optlevel = atoi(optarg);
-	  break;
-	case 'c':
-	  if (mode_selected()) return E_USAGE;
-	  optfile = 0;
-	  if (argv[option][2] != 0) 
-	    optfile = &argv[option][2];
-	  else if (argv[option+1] && argv[option + 1][0] != '-') {
-	    optfile = &argv[option + 1][0];
-	    option++;
-	  }
-	  opt_make_score = _true_;
-	  break;
-	case 'C':
-	  ownColormap = _true_;
-	  break;
-	case 'r':
-	  if (mode_selected()) return E_USAGE;
-	  optrestore = _true_;
-	  break;
-	case 'v':
-	  if (mode_selected()) return E_USAGE;
-	  option++;
-	  optlevel = atoi(argv[option++]);
-	  if (!optlevel || !argv[option]) return E_USAGE;
-	  username = FixUsername(argv[option++]);
-	  if (!argv[option]) return E_USAGE;
-	  movelen = atoi(argv[option++]);
-	  if (!movelen) return E_USAGE;
-	  opt_verify = _true_;
-	  break;
-	case 'L':
-	  if (mode_selected()) return E_USAGE;
-	  option++;
-	  if (!argv[option]) return E_USAGE;
-	  line1 = atoi(argv[option++]);
-	  if (!argv[option]) return E_USAGE;
-	  line2 = atoi(argv[option]);
-	  if (line1 > line2) return E_USAGE;
-	  opt_partial_score = _true_;
-	  break;
-	case 'u':
-	  option++;
-	  if (!argv[option]) return E_USAGE;
-	  username = FixUsername(argv[option]);
-	  break;
-	case 'U':
-	  if (mode_selected()) return E_USAGE;
-	  opt_user_level = _true_;
-	  break;
-	case 'D':
-	  datemode = _true_;
-	  break;
-	case 'H':
-	  headermode = _true_;
-	  break;
-	default:
-	  if (mode_selected()) return E_USAGE;
-	  optlevel = atoi(argv[option]+1);
-	  if (optlevel == 0) return E_USAGE;
-	  break;
+        case 's':
+          if (mode_selected()) return E_USAGE;
+          opt_show_score = _true_;
+          optarg = &argv[option][2];
+          if (!isdigit(*optarg) && argv[option+1] && isdigit(argv[option+1][0]))
+          {
+            optarg = &argv[option+1][0];
+            option++;
+          }
+          optlevel = atoi(optarg);
+          break;
+        case 'c':
+          if (mode_selected()) return E_USAGE;
+          optfile = 0;
+          if (argv[option][2] != 0)
+            optfile = &argv[option][2];
+          else if (argv[option+1] && argv[option + 1][0] != '-') {
+            optfile = &argv[option + 1][0];
+            option++;
+          }
+          opt_make_score = _true_;
+          break;
+        case 'C':
+          ownColormap = _true_;
+          break;
+        case 'r':
+          if (mode_selected()) return E_USAGE;
+          optrestore = _true_;
+          break;
+        case 'v':
+          if (mode_selected()) return E_USAGE;
+          option++;
+          optlevel = atoi(argv[option++]);
+          if (!optlevel || !argv[option]) return E_USAGE;
+          username = FixUsername(argv[option++]);
+          if (!argv[option]) return E_USAGE;
+          movelen = atoi(argv[option++]);
+          if (!movelen) return E_USAGE;
+          opt_verify = _true_;
+          break;
+        case 'L':
+          if (mode_selected()) return E_USAGE;
+          option++;
+          if (!argv[option]) return E_USAGE;
+          line1 = atoi(argv[option++]);
+          if (!argv[option]) return E_USAGE;
+          line2 = atoi(argv[option]);
+          if (line1 > line2) return E_USAGE;
+          opt_partial_score = _true_;
+          break;
+        case 'u':
+          option++;
+          if (!argv[option]) return E_USAGE;
+          username = FixUsername(argv[option]);
+          break;
+        case 'U':
+          if (mode_selected()) return E_USAGE;
+          opt_user_level = _true_;
+          break;
+        case 'D':
+          datemode = _true_;
+          break;
+        case 'H':
+          headermode = _true_;
+          break;
+        default:
+          if (mode_selected()) return E_USAGE;
+          optlevel = atoi(argv[option]+1);
+          if (optlevel == 0) return E_USAGE;
+          break;
       }
     } else
       /* found an option that didn't begin with a - (oops) */
@@ -349,13 +349,13 @@ static char *ReadMoveSeq()
     char *moveseq = (char *)malloc(movelen);
     int ch = 0;
     while (ch < movelen) {
-	int n = read(0, moveseq + ch, movelen - ch); /* read from stdin */
-	if (n <= 0) { perror("Move sequence"); return 0; }
-	ch += n;
+        int n = read(0, moveseq + ch, movelen - ch); /* read from stdin */
+        if (n <= 0) { perror("Move sequence"); return 0; }
+        ch += n;
     }
     return moveseq;
 }
-  
+
 short VerifyScore(short optlevel)
 {
     short ret;
@@ -365,11 +365,11 @@ short VerifyScore(short optlevel)
     ret = ReadScreen();
     if (ret) return ret;
     if (Verify(movelen, moveseq)) {
-	ret = Score(_false_);
-	scorelevel = 0; /* don't score again */
-	if (ret == 0) ret = E_ENDGAME;
+        ret = Score(_false_);
+        scorelevel = 0; /* don't score again */
+        if (ret == 0) ret = E_ENDGAME;
     } else {
-	ret = E_WRITESCORE;
+        ret = E_WRITESCORE;
     }
     free(moveseq);
     return ret;
@@ -379,55 +379,55 @@ short VerifyScore(short optlevel)
 static short GameLoop(void)
 {
     short ret = 0;
-    
+
     /* make sure X is all set up and ready for us */
     ret = InitX();
     if (ret == E_NOCOLOR && !ownColormap) {
-	DestroyDisplay();
-	ownColormap = _true_;
-	fprintf(stderr,
-	"xsokoban: Couldn't allocate enough colors, trying own colormap\n");
-	ret = InitX();
+        DestroyDisplay();
+        ownColormap = _true_;
+        fprintf(stderr,
+        "xsokoban: Couldn't allocate enough colors, trying own colormap\n");
+        ret = InitX();
     }
-    
+
     if (ret != 0) return ret;
-    
+
     /* get where we are starting from */
     if (!optrestore) ret = ReadScreen();
-    
+
     /* until we quit or get an error, just keep on going. */
     while(ret == 0) {
-	ret = Play();
-	if ((scorelevel > 0) && scoring) {
-	    int ret2;
-	    ret2 = Score(_false_);
-	    Error(ret2);
-	    scorelevel = 0;
-	}
-	if (ret == 0 || ret == E_ABORTLEVEL) {
-	    short newlev = 0;
-	    short ret2;
-	    ret2 = DisplayScores(&newlev);
-	    if (ret2 == 0) {
-		if (newlev > 0 &&
+        ret = Play();
+        if ((scorelevel > 0) && scoring) {
+            int ret2;
+            ret2 = Score(_false_);
+            Error(ret2);
+            scorelevel = 0;
+        }
+        if (ret == 0 || ret == E_ABORTLEVEL) {
+            short newlev = 0;
+            short ret2;
+            ret2 = DisplayScores(&newlev);
+            if (ret2 == 0) {
+                if (newlev > 0 &&
 #if !ANYLEVEL
-		    newlev <= userlevel &&
+                    newlev <= userlevel &&
 #endif
-		    1) {
-		    level = newlev;
-		} else {
-		    if (ret == 0) level++;
-		}
-		ret = 0;
-	    } else {
-		ret = ret2;
-	    }
-		
-	}
-	if (ret == 0) {
-	    moves = pushes = packets = savepack = 0;
-	    ret = ReadScreen();
-	}
+                    1) {
+                    level = newlev;
+                } else {
+                    if (ret == 0) level++;
+                }
+                ret = 0;
+            } else {
+                ret = ret2;
+            }
+
+        }
+        if (ret == 0) {
+            moves = pushes = packets = savepack = 0;
+            ret = ReadScreen();
+        }
     }
     return ret;
 }
@@ -438,8 +438,8 @@ static short GetGamePassword(void)
   return ((strcmp(getpass("Password: "), PASSWORD) == 0) ? 0 : E_ILLPASSWORD);
 }
 
-/* display the correct error message based on the error number given us. 
- * There are 2 special cases, E_ENDGAME (in which case we don't WANT a 
+/* display the correct error message based on the error number given us.
+ * There are 2 special cases, E_ENDGAME (in which case we don't WANT a
  * silly error message cause it's not really an error, and E_USAGE, in which
  * case we want to give a really nice list of all the legal options.
  */
@@ -479,7 +479,7 @@ static void Error(short err)
       break;
     default:
       if (err != E_ENDGAME && err != E_ABORTLEVEL)
-	fprintf(stderr, "%s: %s\n", progname, errmess[0]);
+        fprintf(stderr, "%s: %s\n", progname, errmess[0]);
       break;
   }
 }
