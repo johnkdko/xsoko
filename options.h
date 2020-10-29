@@ -19,6 +19,6 @@ static XrmOptionDescRec options[] = {
   { "-pointer",    "*pointerColor",  XrmoptionSepArg,   (caddr_t)     0 },
   { "-b",          "*bitmapDir",     XrmoptionSepArg,   (caddr_t)     0 },
   { "-bitdir",     "*bitmapDir",     XrmoptionSepArg,   (caddr_t)     0 },
-  { "-display",    ".display",             XrmoptionSepArg,        (caddr_t)     0 },
+  { "-display",    ".display",       XrmoptionSepArg,   (caddr_t)     0 },
   { "-xrm",        (char *) 0,       XrmoptionResArg,   (caddr_t)     0 }
 };
